@@ -18,13 +18,16 @@ class Helper {
 
     }
 
-    public static function ErrorChecking(Resource $resource, String $additionalMessage) {
-        try {
+    public static function ErrorChecking($resource, String $additionalMessage) {
+
+        if(is_resource($resource)) {
             return $resource;
-        } catch (Exception $e) {
+        } else {
             $printMessage = $additionalMessage;
-            $additionalMessage ? $printMessage : null;
-            return $e;
+            echo $additionalMessage ?? $printMessage;
+            echo "\n";
+            throw new Exception('Caught Error!');
+//            return $additionalMessage ? $printMessage : null;
         }
     }
 
@@ -42,6 +45,7 @@ class HijupInternAbsentLogger {
         $this->Buffer();
         $this->getLines($this->getLogFilename());
         $this->Buffer();
+
 //        $this->setData("Name", "Surga Savero");
 //
 //        $header = "#\n";
@@ -120,7 +124,9 @@ class HijupInternAbsentLogger {
 
     private function Buffer()
     {
-        $this->setBufferHandler(fopen(HijupInternAbsentLogger::getLogFilename(), 'a+'));
+        $getResource = fopen(HijupInternAbsentLogger::getLogFilename(), 'a+');
+        $bufferHandler = Helper::ErrorChecking($getResource, '[Verbose] Handler set');
+        $this->setBufferHandler($bufferHandler);
     }
 
     public function In($dataInput)
@@ -193,7 +199,7 @@ class HijupInternAbsentLogger {
     public function getLines($file)
     {
         $linecount = 0;
-        $handle = fopen($file, "r");
+        Helper::ErrorChecking($handle = fopen($file, "r+"), "Can't read {$handle}");
         while (!feof($handle)) {
             $line = fgets($handle);
             $linecount++;
