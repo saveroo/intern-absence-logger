@@ -8,8 +8,29 @@
  * Date: 25/10/16
  * Time: 18:29
  */
-class HijupInternAbsentLogger
-{
+
+class Helper {
+
+    /**
+     * Helper constructor.
+     */
+    public function __construct() {
+
+    }
+
+    public static function ErrorChecking(Resource $resource, String $additionalMessage) {
+        try {
+            return $resource;
+        } catch (Exception $e) {
+            $printMessage = $additionalMessage;
+            $additionalMessage ? $printMessage : null;
+            return $e;
+        }
+    }
+
+}
+
+class HijupInternAbsentLogger {
     public $data = array();
     private $bufferHandler;
     static $logFilename = 'intern_logger.txt';
@@ -18,13 +39,14 @@ class HijupInternAbsentLogger
 
     function __construct()
     {
+        $this->Buffer();
         $this->getLines($this->getLogFilename());
+        $this->Buffer();
 //        $this->setData("Name", "Surga Savero");
 //
 //        $header = "#\n";
 //        $data = "# Date".static::nowDate();
 //        $data .= "\n# Name: ".$this->data['name'];
-        $this->Buffer();
     }
 
     /**
